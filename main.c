@@ -2,62 +2,67 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct Node{
+// Linked List düğüm yapısı
+typedef struct Node {
     char log[256];
     struct Node* next;
-}Node;
+} Node;
 
 Node* head = NULL;
 
-void addLog(char* line){
+// Listeye yeni log ekleme
+void addLog(char* line) {
 
     Node* newNode = (Node*)malloc(sizeof(Node));
 
-    strcpy(newNode->log,line);
-
+    strcpy(newNode->log, line);
     newNode->next = NULL;
 
-    if(head == NULL){
+    if (head == NULL) {
         head = newNode;
         return;
     }
 
     Node* temp = head;
 
-    while(temp->next != NULL){
+    while (temp->next != NULL) {
         temp = temp->next;
     }
 
     temp->next = newNode;
 }
 
-void printLogs(){
+// Logları yazdırma
+void printLogs() {
 
     Node* temp = head;
 
-    while(temp != NULL){
-        printf("%s",temp->log);
+    printf("Linked List içindeki Syslog kayıtları:\n\n");
+
+    while (temp != NULL) {
+        printf("%s\n", temp->log);
         temp = temp->next;
     }
 }
 
-int main(){
+int main() {
 
-    FILE *file = fopen("/var/log/syslog","r");
+    // Örnek syslog kayıtları
+    char logs[][256] = {
+        "Mar 10 10:00:01 system started",
+        "Mar 10 10:05:12 user login",
+        "Mar 10 10:10:45 network connected",
+        "Mar 10 10:15:33 cron job executed"
+    };
 
-    if(file == NULL){
-        printf("Dosya acilamadi\n");
-        return 1;
+    int size = 4;
+
+    // Linked list'e ekleme
+    for(int i = 0; i < size; i++) {
+        addLog(logs[i]);
     }
 
-    char line[256];
-
-    while(fgets(line,sizeof(line),file)){
-        addLog(line);
-    }
-
-    fclose(file);
-
+    // Listeyi yazdır
     printLogs();
 
     return 0;
